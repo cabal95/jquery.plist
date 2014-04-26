@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+<meta content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href='jquery.plist.css' type="text/css" media="all" />
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet" />
+
+<script src="//code.jquery.com/jquery-1.11.0.min.js"></script>
+<script type='text/javascript' src='jquery.plist.js'></script>
+
+<script type="text/javascript">
+$(document).ready(function() {
+  $('#save').click(function () {
+    $('#txtout').text($('div.plist').savePropertyList());
+  });
+
+  $.ajax({
+            type: "GET",
+            url: "https://plista4j.googlecode.com/svn-history/r12/trunk/PListA4J/sample.plist",
+            cache: false,
+            dataType: "xml",
+            success: function(xml) {
+		$('div.plist').loadPropertyList(xml);
+            }
+  });
+});
+</script>
+
+<title>Sample Property List Editor/title>
+</head>
+
+<body>
+
+<div class="plist"></div>
+
+<div style="margin-top: 20px; border: 1px solid black;">
+ <div><span id="save">Save</span></div>
+
+ <div><pre><span id="txtout"></span></pre></div>
+</div>
+
+</body>
+</html>
+
