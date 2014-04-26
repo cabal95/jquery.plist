@@ -32,3 +32,5 @@ $('div').loadPropertyList(xml);
 When you are ready to save:
 
 var text = $('div').savePropertyList();
+
+See a sample here: https://rawgit.com/cabal95/jquery.plist/master/sample.html
