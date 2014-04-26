@@ -455,9 +455,9 @@
 	    var nx, obj;
 
 	    if ($(tr).next().length > 0) {
-		for (obj = $(tr).next(); ; obj = nx) {
+		for (obj = $(tr).next(); $(obj).length > 0; obj = nx) {
 		    nx = $(obj).next();
-		    if ($(nx).length == 0 || $(obj).data('indentlevel') <= $(tr).data('indentlevel'))
+		    if ($(obj).data('indentlevel') <= $(tr).data('indentlevel'))
 			break;
 		    $(obj).remove();
 		}

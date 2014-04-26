@@ -12,18 +12,15 @@
 
 <script type="text/javascript">
 $(document).ready(function() {
-  $('#save').click(function () {
-    $('#txtout').text($('div.plist').savePropertyList());
+  $('div.plist').emptyPropertyList();
+
+  $('#load').click(function () {
+    var x = $.parseXML($('#txtout').val());
+    $('div.plist').loadPropertyList($(x));
   });
 
-  $.ajax({
-            type: "GET",
-            url: "https://raw.githubusercontent.com/cabal95/jquery.plist/master/sample.plist",
-            cache: false,
-            dataType: "xml",
-            success: function(xml) {
-		$('div.plist').loadPropertyList(xml);
-            }
+  $('#save').click(function () {
+    $('#txtout').val($('div.plist').savePropertyList());
   });
 });
 </script>
@@ -36,9 +33,9 @@ $(document).ready(function() {
 <div class="plist"></div>
 
 <div style="margin-top: 20px; border: 1px solid black;">
- <div><span id="save">Save</span></div>
+ <div><button id="save">Save</button><button id="load">Load</button></div>
 
- <div><pre><span id="txtout"></span></pre></div>
+ <div><textarea id="txtout" rows="25" cols="120"></textarea></div>
 </div>
 
 </body>
