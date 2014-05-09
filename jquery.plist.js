@@ -4,17 +4,21 @@
     $.fn.loadPropertyList = function( xml, options )
     {
         try {
-	    var plist, plist_data, rows;
+	    var plist, plist_data, rows, root;
 
             // Clear any existing data.
 	    $(this).empty();
 	    $(this).append('<table class="plist"></table>');
 
 	    plist = $(xml).children().eq(0);
-	    if (plist.get(0).nodeName != 'plist')
+	    if (plist.get(0).nodeName == 'plist')
+                root = plist.children().eq(0);
+            else if (plist.get(0).nodeName == 'dict' || plist.get(0).nodeName == 'array')
+                root = plist.children().eq(0);
+            else
 		return false;
 
-	    plist_data = parsePropertyListNode($(plist).children().eq(0));
+	    plist_data = parsePropertyListNode(root);
 	    plist_data['key'] = 'Root';
 	    rows = generatePlistDOM([ plist_data ], 0, false);
 	    $(this).children('table').eq(0).append(rows);
