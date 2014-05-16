@@ -254,7 +254,7 @@
 	    $(td).append(obj);
 	}
 	else if (type == 'data') {
-	    var obj = $('<input type="text" data-regex="^[a-zA-Z+\\/=]$" />');
+	    var obj = $('<input type="text" data-regex="^[a-zA-Z0-9+\\/=]$" />');
 	    if (value)
 		$(obj).val(value);
 	    $(td).append(obj);
@@ -517,7 +517,7 @@
 	    return { 'type': 'bool', 'value': 0 };
 	}
 	else if (node.get(0).nodeName.toLowerCase() == 'data') {
-	    return { 'type': 'data', 'value': $(node).text().replace(/[^a-zA-Z+\/=]/g, '') };
+	    return { 'type': 'data', 'value': $(node).text().replace(/[^a-zA-Z0-9+\/=]/g, '') };
 	}
 	else if (node.get(0).nodeName.toLowerCase() == 'date') {
 	    return { 'type': 'date', 'value': $(node).text() };
