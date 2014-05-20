@@ -50,6 +50,7 @@ table.plist > tbody > tr > td.plist-value > span.plist-value-icons {
 
 table.plist > tbody > tr > td.plist-value > span.plist-value-icons > i {
     margin-left: 5px;
+    cursor: pointer;
 }
 
 table.plist > tbody > tr > td.plist-key > input {

@@ -232,11 +232,13 @@
 
 	if (type == 'dictionary') {
 	    $(icons).append(plistExpandCollapseButton);
-	    $(icons).append(plistAddButton());
+	    if (level + 1 >= options.protect)
+		$(icons).append(plistAddButton(options));
 	}
 	else if (type == 'array') {
 	    $(icons).append(plistExpandCollapseButton);
-	    $(icons).append(plistAddButton());
+	    if (level + 1 >= options.protect)
+		$(icons).append(plistAddButton(options));
 	}
 	else if (type == 'bool') {
 	    var obj;
@@ -287,7 +289,7 @@
 	    $(td).append(obj);
 	}
 
-	if (level > 0)
+	if (level > 0 && level >= options.protect)
 	    $(icons).append(plistDeleteButton());
 	$(td).append(icons);
 
@@ -401,12 +403,12 @@
 
     function plistExpandCollapseButton()
     {
-	var btn = $('<i class="icon-collapse"></i>');
+	var btn = $('<i class="fa fa-toggle-down"></i>');
 
 	$(btn).click(function () {
 	    var tr = $(this).closest('tr');
 	    var nx, obj;
-	    var show = $(this).hasClass('icon-expand');
+	    var show = $(this).hasClass('fa-toggle-right');
 
 	    if ($(tr).next().length > 0) {
 		for (obj = $(tr).next(); $(obj).length > 0; obj = nx) {
@@ -416,7 +418,7 @@
 
 		    if (show) {
 			$(obj).show();
-			$(obj).find('i.icon-expand').removeClass('icon-expand').addClass('icon-collapse');
+			$(obj).find('i.fa-toggle-right').removeClass('fa-expand').addClass('icon-toggle-down');
 		    }
 		    else
 			$(obj).hide();
@@ -424,17 +426,17 @@
 	    }
 
 	    if (show)
-		$(this).removeClass('icon-expand').addClass('icon-collapse');
+		$(this).removeClass('fa-toggle-right').addClass('fa-toggle-down');
 	    else
-		$(this).removeClass('icon-collapse').addClass('icon-expand');
+		$(this).removeClass('fa-toggle-down').addClass('fa-toggle-right');
 	});
 
 	return btn;
     }
 
-    function plistAddButton()
+    function plistAddButton(options)
     {
-	var btn = $('<i class="icon-plus"></i>');
+	var btn = $('<i class="fa fa-plus"></i>');
 
 	$(btn).click(function () {
 	    var tr = $(this).closest('tr');
@@ -444,9 +446,9 @@
 	    var newrow = $('<tr data-indentlevel="' + level + '" class="plist-indentlevel-' + (level % 5) + '"></tr>');
 	    var key = (type == 'dictionary' ? getUniqueKey($(tr)) : '-1');
 
-	    newrow.append(generatePlistDOMKey(key, (type == 'array'), level));
-	    newrow.append(generatePlistDOMType('string', level));
-	    newrow.append(generatePlistDOMValue('string', null, level));
+	    newrow.append(generatePlistDOMKey(key, (type == 'array'), level, options));
+	    newrow.append(generatePlistDOMType('string', level, options));
+	    newrow.append(generatePlistDOMValue('string', null, level, options));
 
 	    if ($(tr).next().length > 0) {
 		for (lst = tr, obj = $(tr).next(); ; lst = obj, obj = nx) {
@@ -473,7 +475,7 @@
 
     function plistDeleteButton()
     {
-	var btn = $('<i class="icon-remove"></i>');
+	var btn = $('<i class="fa fa-times"></i>');
 
 	$(btn).click(function () {
 	    var tr = $(this).closest('tr');
