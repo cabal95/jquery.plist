@@ -171,8 +171,10 @@
 	if (level > 0) {
 	    var txt = $('<input type="text" class="plist-keyname" />');
 	    txt.val(key);
-	    if (readonlykey || level < options.protect)
+	    if (readonlykey)
 		$(txt).prop('readonly', true).data('inarray', '1');
+	    if (level < options.protect)
+		$(txt).prop('readonly', true);
 	    td.append(txt);
 	}
 	else
@@ -359,6 +361,7 @@
 		index -= 1;
 		break;
 	    }
+
 	    if ($(row).find('td.plist-key input').data('inarray') !== '1' && level > 0)
 		key = tabs + '<key>' + key + '</key>\n';
 	    else
