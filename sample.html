@@ -16,7 +16,7 @@ $(document).ready(function() {
 
   $('#load').click(function () {
     var x = $.parseXML($('#txtout').val());
-    $('div.plist').loadPropertyList($(x));
+    $('div.plist').loadPropertyList($(x), { 'protect': 1 });
   });
 
   $('#save').click(function () {

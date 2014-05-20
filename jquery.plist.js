@@ -1,10 +1,15 @@
 (function ( $ ) {
     var tableElement;
+    var defaultOptions = {
+      protect: 0
+    };
 
     $.fn.loadPropertyList = function( xml, options )
     {
         try {
-	    var plist, plist_data, rows, root;
+	    var plist, plist_data, rows, root, opt;
+
+            opt = $.extend(defaultOptions, options);
 
             // Clear any existing data.
 	    $(this).empty();
@@ -20,7 +25,7 @@
 
 	    plist_data = parsePropertyListNode(root);
 	    plist_data['key'] = 'Root';
-	    rows = generatePlistDOM([ plist_data ], 0, false);
+	    rows = generatePlistDOM([ plist_data ], 0, false, opt);
 	    $(this).children('table').eq(0).append(rows);
 	}
 	catch (err) {
@@ -86,7 +91,7 @@
 	});
     }
 
-    function generatePlistDOM(plist, level, readonlykey)
+    function generatePlistDOM(plist, level, readonlykey, options)
     {
 	var rows = [ ];
 	var idx = 0;
@@ -100,55 +105,55 @@
 		key = idx++;
 
 	    if (item.type == 'dictionary') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
-		var children = generatePlistDOM(item.value, level + 1, false);
+		var children = generatePlistDOM(item.value, level + 1, false, options);
 		rows = rows.concat(children);
 	    }
 	    else if (item.type == 'array') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
-		var children = generatePlistDOM(item.value, level + 1, true);
+		var children = generatePlistDOM(item.value, level + 1, true, options);
 		rows = rows.concat(children);
 	    }
 	    else if (item.type == 'bool') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else if (item.type == 'string') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else if (item.type == 'integer') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else if (item.type == 'float') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else if (item.type == 'data') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else if (item.type == 'date') {
-		row.append(generatePlistDOMKey(key, readonlykey, level));
-		row.append(generatePlistDOMType(item.type, level));
-		row.append(generatePlistDOMValue(item.type, item.value, level));
+		row.append(generatePlistDOMKey(key, readonlykey, level, options));
+		row.append(generatePlistDOMType(item.type, level, options));
+		row.append(generatePlistDOMValue(item.type, item.value, level, options));
 		rows.push(row);
 	    }
 	    else
@@ -158,7 +163,7 @@
 	return rows;
     }
 
-    function generatePlistDOMKey(key, readonlykey, level)
+    function generatePlistDOMKey(key, readonlykey, level, options)
     {
 	var td = $('<td class="plist-key"></td>');
 
@@ -166,7 +171,7 @@
 	if (level > 0) {
 	    var txt = $('<input type="text" class="plist-keyname" />');
 	    txt.val(key);
-	    if (readonlykey)
+	    if (readonlykey || level < options.protect)
 		$(txt).prop('readonly', true).data('inarray', '1');
 	    td.append(txt);
 	}
@@ -176,15 +181,15 @@
 	return td;
     }
 
-    function generatePlistDOMType(type, level)
+    function generatePlistDOMType(type, level, options)
     {
 	var td = $('<td class="plist-type"></td>');
 	var select = $('<select></select>');
 	var option;
 
 	$(select).append('<option value="dictionary">Dictionary</option>');
+	$(select).append('<option value="array">Array</option>');
 	if (level > 0) {
-	    $(select).append('<option value="array">Array</option>');
 	    $(select).append('<option value="bool">Bool</option>');
 	    $(select).append('<option value="string">String</option>');
 	    $(select).append('<option value="date">Date</option>');
@@ -193,6 +198,8 @@
 	    $(select).append('<option value="data">Data</option>');
 	}
 	$(select).val(type);
+	if (level < options.protect)
+	    $(select).prop('disabled', 'disabled');
 
 	$(td).append(select);
 
@@ -203,7 +210,7 @@
 
 	    // Erase the value of this row.
 	    $(tr).children()[2].remove();
-	    $(tr).append(generatePlistDOMValue($(this).val(), null, level));
+	    $(tr).append(generatePlistDOMValue($(this).val(), null, level, options));
 	    // Erase all child rows, if any.
 	    if ($(tr).next().length > 0) {
 		for (obj = $(tr).next(); ; obj = nx) {
@@ -218,7 +225,7 @@
 	return td;
     }
 
-    function generatePlistDOMValue(type, value, level)
+    function generatePlistDOMValue(type, value, level, options)
     {
 	var td = $('<td class="plist-value"></td>');
 	var icons = $('<span class="plist-value-icons"></span>');
@@ -232,43 +239,57 @@
 	    $(icons).append(plistAddButton());
 	}
 	else if (type == 'bool') {
+	    var obj;
 	    if (value == 1)
-		$(td).append('<input type="checkbox" checked />');
+		obj = $('<input type="checkbox" checked />');
 	    else
-		$(td).append('<input type="checkbox" />');
+		obj = $('<input type="checkbox" />');
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
+	    $(td).append(obj);
 	}
 	else if (type == 'string') {
 	    var obj = $('<input type="text" data-regex="^.*$" />');
 	    if (value)
 		$(obj).val(value);
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
 	    $(td).append(obj);
 	}
 	else if (type == 'integer') {
 	    var obj = $('<input type="text" data-regex="^[0-9]+$" />');
 	    $(obj).val((value ? value : "0"));
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
 	    $(td).append(obj);
 	}
 	else if (type == 'float') {
 	    var obj = $('<input type="text" data-regex="^[0-9]+(\.[0-9]+){0,1}$" />');
 	    $(obj).val((value ? value : "0"));
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
 	    $(td).append(obj);
 	}
 	else if (type == 'data') {
 	    var obj = $('<input type="text" data-regex="^[a-zA-Z0-9+\\/=]$" />');
 	    if (value)
 		$(obj).val(value);
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
 	    $(td).append(obj);
 	}
 	else if (type == 'date') {
 	    var obj = $('<input type="text" data-regex="^\d\d\d\d-\d\d-\d\dT\d\d:\d\d:\d\dZ$" />');
 	    if (value)
 		$(obj).val(value);
+	    if (level < options.protect)
+		$(obj).attr('disabled', 'disabled');
 	    $(td).append(obj);
 	}
 
 	if (level > 0)
 	    $(icons).append(plistDeleteButton());
-	  $(td).append(icons);
+	$(td).append(icons);
 
 	return td;
     }
